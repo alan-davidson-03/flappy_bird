@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spider-Man Flappy Bird | Finger Pinch Tap Edition</title>
+  <meta name="description" content="Play Spider-Man Flappy Bird using your pointer finger and thumb! Tap your fingertips together to web-sling through NYC skyscrapers.">
+
+  <!-- Google Fonts: Bangers (Marvel comic header), Outfit & Rajdhani (Cyber HUD) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Outfit:wght@400;600;700;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- MediaPipe Hands & Camera Utils for Realtime Finger Tip Pinch Detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <!-- Game Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo-badge">🕷️ Marvel Interactive Web-Slinger</div>
+    <h1 class="comic-title">SPIDER-MAN <span class="title-sub">PINCH & FLY</span></h1>
+  </header>
+
+  <!-- Main Game Layout -->
+  <main class="game-container">
+
+    <!-- Game Canvas Viewport & Screen Overlays -->
+    <div class="game-stage-wrapper">
+      <div class="canvas-viewport">
+        <!-- Live In-game HUD -->
+        <div class="in-game-score-bar">
+          <div class="score-counter" id="current-score">0</div>
+          <div class="hud-pill-group">
+            <div class="hud-pill">
+              <span>🏆 Best:</span>
+              <span id="high-score">0</span>
+            </div>
+            <div class="hud-pill">
+              <span>🕷️ Bonus:</span>
+              <span id="spiders-count">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HTML5 Canvas -->
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Menu / Get Ready Modal -->
+        <div class="modal-overlay" id="modal-menu">
+          <div class="modal-content">
+            <h2 class="comic-banner">GET READY!</h2>
+            <div class="finger-guide-art">
+              <div class="pinch-animation-circle"></div>
+              <div class="finger-emoji">🤏</div>
+            </div>
+            <p class="modal-quote">"Tap your index finger & thumb together to shoot web & fly!"</p>
+            <button class="btn-spidey-primary" id="btn-start">LAUNCH SPIDER-MAN</button>
+            <div class="alt-control-tip">
+              Or tap screen / press <kbd>SPACE</kbd> / <kbd>↑</kbd>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pause Modal -->
+        <div class="modal-overlay hidden" id="modal-pause">
+          <div class="modal-content">
+            <h2 class="comic-banner" style="color: #ffd700;">GAME PAUSED</h2>
+            <p class="modal-quote">"Spidey-Sense is on standby!"</p>
+            <button class="btn-spidey-primary" id="btn-resume">RESUME WEBSLINGING</button>
+            <div class="alt-control-tip">
+              Press <kbd>P</kbd> or <kbd>ESC</kbd> to resume
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal-overlay hidden" id="modal-gameover">
+          <div class="modal-content">
+            <h2 class="comic-banner" style="color: #ff3344;">GAME OVER!</h2>
+            <p class="modal-quote">"With great power comes great responsibility."</p>
+
+            <div class="score-board">
+              <div class="hero-rank-badge" id="comic-rating">SPECTACULAR HERO</div>
+              <div class="score-row">
+                <span class="score-label">FINAL SCORE</span>
+                <span class="score-val" id="final-score">0</span>
+              </div>
+              <div class="score-row">
+                <span class="score-label">BEST RECORD</span>
+                <span class="score-val" id="best-score" style="color: #00ffaa;">0</span>
+              </div>
+            </div>
+
+            <button class="btn-spidey-primary" id="btn-restart">TRY AGAIN</button>
+            <div class="alt-control-tip">
+              Pinch fingertips or press <kbd>SPACE</kbd> to replay
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Side Panel: Spider-HUD & Finger Sensor -->
+    <aside class="side-panel">
+
+      <!-- Spider Finger-Tracker Card -->
+      <section class="card">
+        <div class="card-title">
+          <span>🖐️ Spider-Sensor HUD</span>
+          <span style="font-size: 0.75rem; color: #ffeb3b;">LIVE TRACKING</span>
+        </div>
+
+        <!-- Video & Overlay HUD Canvas -->
+        <div class="camera-feed-box">
+          <video id="webcam-video" playsinline></video>
+          <canvas id="hud-canvas" width="320" height="240"></canvas>
+        </div>
+
+        <!-- Live Sensor Status Badge -->
+        <div class="sensor-badge" id="sensor-status">
+          Starting Spider-Sensor...
+        </div>
+
+        <!-- Sensitivity Slider -->
+        <div class="slider-group">
+          <div class="slider-label">
+            <span>Pinch Sensitivity</span>
+            <span style="color: var(--spider-gold);">Adjust for distance</span>
+          </div>
+          <input type="range" id="slider-sensitivity" min="1" max="10" value="6">
+        </div>
+
+        <!-- Quick Controls -->
+        <div class="btn-grid">
+          <button class="btn-ctrl active" id="btn-toggle-cam">📷 Camera ON</button>
+          <button class="btn-ctrl" id="btn-toggle-pause">⏸️ Pause (P)</button>
+          <button class="btn-ctrl" id="btn-toggle-sound">🔊 SFX: ON</button>
+          <button class="btn-ctrl" id="btn-toggle-bgm">🎵 Theme: OFF</button>
+          <button class="btn-ctrl" style="grid-column: span 2;" onclick="window.spiderGame && window.spiderGame.handleAction()">🕹️ Tap Jump</button>
+        </div>
+      </section>
+
+      <!-- How to play Card -->
+      <section class="card">
+        <div class="card-title">
+          <span>🎯 Superhero Controls</span>
+        </div>
+        <div class="gesture-guide">
+          <div class="gesture-icon-box">👌</div>
+          <div class="gesture-desc">
+            <h4>FINGER TIP PINCH</h4>
+            <p>Show your hand to the camera. Bring your <strong>pointer finger</strong> and <strong>thumb</strong> together to flap & shoot a web line ("THWIP!")!</p>
+          </div>
+        </div>
+        <div style="margin-top: 10px; font-size: 0.8rem; color: #90a0be; line-height: 1.4;">
+          ⭐ Collect <strong>Golden Spiders</strong> for +5 Bonus Points!<br>
+          ⚡ Avoid Oscorp power columns & Doc Ock robotic towers.
+        </div>
+      </section>
+
+    </aside>
+
+  </main>
+
+  <footer class="app-footer">
+    Crafted with Web Audio API & MediaPipe Hands AI • Friendly Neighborhood Spider-Man Flappy
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/spider.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/hand-tracker.js"></script>
+  <script src="js/game.js"></script>
+
+</body>
+</html>

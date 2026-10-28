@@ -1,0 +1,566 @@
+/* =========================================================
+   SPIDER-MAN PINCH-FLAP: COMIC SUPERHERO STYLING
+   ========================================================= */
+
+:root {
+  --spider-red: #e21b24;
+  --spider-red-dark: #9e0e15;
+  --spider-blue: #0c429a;
+  --spider-dark: #080d1a;
+  --spider-gold: #ffd700;
+  --spider-cyan: #00e5ff;
+  --comic-yellow: #ffec3d;
+  --glass-bg: rgba(13, 20, 36, 0.82);
+  --glass-border: rgba(226, 27, 36, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: var(--spider-dark);
+  background-image: 
+    radial-gradient(circle at 50% 30%, rgba(226, 27, 36, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(12, 66, 154, 0.2) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+  font-family: 'Outfit', sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  padding: 16px;
+}
+
+/* Header */
+.app-header {
+  text-align: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--spider-gold);
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.comic-title {
+  font-family: 'Bangers', cursive, sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 
+    3px 3px 0 var(--spider-red),
+    -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000,
+    0 0 25px rgba(226, 27, 36, 0.7);
+  transform: rotate(-1.5deg);
+  line-height: 1.05;
+}
+
+.title-sub {
+  color: var(--comic-yellow);
+  font-size: 0.9em;
+  margin-left: 6px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Main Layout Grid */
+.game-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+@media (max-width: 860px) {
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Game Stage Frame */
+.game-stage-wrapper {
+  position: relative;
+  border-radius: 18px;
+  padding: 8px;
+  background: linear-gradient(145deg, #1d2538, #0e1320);
+  box-shadow: 
+    0 18px 45px rgba(0, 0, 0, 0.75),
+    0 0 0 2px rgba(226, 27, 36, 0.5),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.canvas-viewport {
+  position: relative;
+  width: 400px;
+  height: 620px;
+  max-width: 90vw;
+  max-height: 78vh;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+}
+
+.screen-shake {
+  animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+  40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+/* Live Game In-Game Score Overlay */
+.in-game-score-bar {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.score-counter {
+  font-family: 'Bangers', cursive;
+  font-size: 3.5rem;
+  color: #ffffff;
+  text-shadow: 
+    3px 3px 0 #000,
+    -2px -2px 0 #000,
+    0 0 16px rgba(255, 235, 59, 0.8);
+  line-height: 1;
+}
+
+.hud-pill-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.hud-pill {
+  background: rgba(10, 16, 30, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--spider-gold);
+}
+
+/* Spider-HUD Side Panel */
+.side-panel {
+  width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 860px) {
+  .side-panel {
+    width: 400px;
+    max-width: 90vw;
+  }
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.card-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--spider-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* Finger Camera HUD Feed */
+.camera-feed-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #090e19;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+#hud-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#webcam-video {
+  display: none; /* Processed in background and rendered via hud-canvas */
+}
+
+/* Sensor Status Badge */
+.sensor-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: var(--spider-cyan);
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.sensor-badge.ready {
+  background: rgba(0, 255, 128, 0.15);
+  border-color: rgba(0, 255, 128, 0.5);
+  color: #00ff88;
+}
+
+.sensor-badge.error {
+  background: rgba(255, 68, 68, 0.15);
+  border-color: rgba(255, 68, 68, 0.5);
+  color: #ff6b6b;
+}
+
+/* Control Buttons & Sliders */
+.btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-ctrl {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-ctrl:hover {
+  background: rgba(226, 27, 36, 0.25);
+  border-color: var(--spider-red);
+}
+
+.btn-ctrl.active {
+  background: rgba(0, 229, 255, 0.25);
+  border-color: var(--spider-cyan);
+  color: var(--spider-cyan);
+}
+
+/* Sensitivity slider */
+.slider-group {
+  margin-top: 12px;
+}
+
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #90a0be;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--spider-red);
+  height: 6px;
+  border-radius: 3px;
+  background: #1c273e;
+  cursor: pointer;
+}
+
+/* Gesture Visual Instructions Card */
+.gesture-guide {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gesture-icon-box {
+  width: 54px;
+  height: 54px;
+  background: radial-gradient(circle, rgba(226, 27, 36, 0.3), rgba(12, 66, 154, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 15px rgba(226, 27, 36, 0.3);
+}
+
+.gesture-desc h4 {
+  font-family: 'Bangers', cursive;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  color: var(--comic-yellow);
+}
+
+.gesture-desc p {
+  font-size: 0.82rem;
+  color: #cfd8dc;
+  line-height: 1.35;
+}
+
+/* Modals (Menu & Game Over) */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(6, 10, 20, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  z-index: 100;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-content {
+  max-width: 320px;
+  width: 100%;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.comic-banner {
+  font-family: 'Bangers', cursive;
+  font-size: 2.8rem;
+  color: var(--comic-yellow);
+  text-shadow: 
+    3px 3px 0 var(--spider-red),
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.modal-quote {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: #b0c4de;
+  margin-bottom: 16px;
+}
+
+.finger-guide-art {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pinch-animation-circle {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px dashed var(--spider-cyan);
+  animation: pulseRotate 4s linear infinite;
+}
+
+@keyframes pulseRotate {
+  0% { transform: rotate(0deg) scale(0.95); }
+  50% { transform: rotate(180deg) scale(1.08); }
+  100% { transform: rotate(360deg) scale(0.95); }
+}
+
+.finger-emoji {
+  font-size: 3rem;
+  animation: tapFingers 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes tapFingers {
+  0% { transform: scale(0.9); }
+  100% { transform: scale(1.15); }
+}
+
+.btn-spidey-primary {
+  font-family: 'Bangers', cursive;
+  font-size: 1.6rem;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff2233 0%, #b30e19 100%);
+  border: 2px solid #ffffff;
+  padding: 12px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 
+    0 8px 20px rgba(226, 27, 36, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-top: 12px;
+}
+
+.btn-spidey-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 12px 26px rgba(226, 27, 36, 0.7),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+.btn-spidey-primary:active {
+  transform: translateY(1px);
+}
+
+.alt-control-tip {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #8da2c0;
+}
+
+.alt-control-tip kbd {
+  background: #1c273e;
+  border: 1px solid #374a6b;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  color: #fff;
+}
+
+/* Game Over Stats Box */
+.score-board {
+  background: rgba(14, 21, 38, 0.9);
+  border: 2px solid var(--spider-red);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.score-row:last-child {
+  border-bottom: none;
+}
+
+.score-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  color: #9bb1d0;
+  font-size: 0.95rem;
+}
+
+.score-val {
+  font-family: 'Bangers', cursive;
+  font-size: 1.8rem;
+  color: var(--spider-gold);
+}
+
+.hero-rank-badge {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  color: var(--spider-cyan);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  background: rgba(0, 229, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px dashed rgba(0, 229, 255, 0.3);
+}
+
+/* Footer credits */
+.app-footer {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: #637799;
+  text-align: center;
+}

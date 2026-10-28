@@ -1,0 +1,12 @@
+{
+  "name": "spiderman-pinch-flappy",
+  "version": "1.0.0",
+  "description": "Spider-Man themed Flappy Bird game controlled with finger tips pinch gesture",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["game", "mediapipe", "spiderman", "flappy-bird", "hand-tracking"],
+  "author": "",
+  "license": "MIT"
+}
